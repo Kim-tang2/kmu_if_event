@@ -1,35 +1,30 @@
-import requests
-import datetime
+import time
+import sys
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.options import Options
 from login_info import username, password
 
-time = int(datetime.datetime.now().timestamp())
+options = Options()
+options.add_argument("--disable-gpu")  # 그래픽 가속을 사용할 때 크롬에서 버그를 일으키는 현상이 있음
+options.add_argument("--no-sandbox")  # 앗 이런 오류! 방지
+options.add_argument("enable-automation")  # 알림 표시줄 제거
+options.add_argument("--disable-infobars")  # 인포 박스 제거
+options.add_argument("--disable-dev-shm-usage")
 
-instaLoginInfo = {
-    'username': username,
-    'enc_password': f'#PWD_INSTAGRAM_BROWSER:0:{time}:{password}',
-    'queryParams': "{}"
-}
+driver = webdriver.Chrome('./chromedriver', options=options)
+driver.implicitly_wait(2)
 
-instaSession = requests.session()
-with instaSession as e:
-    req = instaSession.get("https://www.instagram.com/accounts/login")
+driver.get('https://www.instagram.com/'+username)
+driver.execute_script("document.querySelectorAll('.-nal3')[1].click();") # 인젝션을 통해 팔로워 버튼 클릭
 
-    cookieStr = str(req.cookies)
-    loginCSRFtoken = cookieStr[37:69]
-    requestsHeader = {
-        'origin': "www.instagram.com",
-        'accept-encoding': "gzip, deflate, br",
-        'accept-language': "en-US,en;q=0.9",
-        'user-agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
-        'x-requested-with': "XMLHttpRequest",
-        'x-csrftoken': loginCSRFtoken,
-        'x-instagram-ajax': "de81cb3fd9c4-hot",
-        'content-type': "application/x-www-form-urlencoded",
-        'accept': "*/*",
-        'referer': "https://www.instagram.com/accounts/login"
-    }
+driver.find_element_by_name('username').send_keys(username)
+driver.find_element_by_name('password').send_keys(password)
 
-    login = instaSession.post("https://www.instagram.com/accounts/login/ajax/", data=instaLoginInfo,
-                              headers=requestsHeader)
+driver.find_element_by_xpath('//*[@id="loginForm"]/div[1]/div[3]/button').submit() # 로그인
+time.sleep(3)
 
-    print(login.status_code)
+driver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/div/div/button').click() # 계정 정보 저장 X
+
+driver.execute_script("document.querySelectorAll('.-nal3')[1].click();") # 팔로워 버튼
+time.sleep(2)
