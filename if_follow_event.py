@@ -1,5 +1,4 @@
 import time
-import sys
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
@@ -15,16 +14,25 @@ options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome('./chromedriver', options=options)
 driver.implicitly_wait(2)
 
-driver.get('https://www.instagram.com/'+username)
-driver.execute_script("document.querySelectorAll('.-nal3')[1].click();") # 인젝션을 통해 팔로워 버튼 클릭
+driver.get('https://www.instagram.com/' + username)
+driver.execute_script("document.querySelectorAll('.-nal3')[1].click();")  # 인젝션을 통해 팔로워 버튼 클릭
 
 driver.find_element_by_name('username').send_keys(username)
 driver.find_element_by_name('password').send_keys(password)
 
-driver.find_element_by_xpath('//*[@id="loginForm"]/div[1]/div[3]/button').submit() # 로그인
+driver.find_element_by_xpath('//*[@id="loginForm"]/div[1]/div[3]/button').submit()  # 로그인
 time.sleep(3)
 
-driver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/div/div/button').click() # 계정 정보 저장 X
+print(time.asctime(time.localtime(time.time())) + ' 학생회 인스타그램 계정 ('+username+') 로그인 성공')
 
-driver.execute_script("document.querySelectorAll('.-nal3')[1].click();") # 팔로워 버튼
+driver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/div/div/button').click()  # 계정 정보 저장 X
 time.sleep(2)
+
+numFollowers = int(driver.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span").text)
+print(f'({username}) 팔로워 수: {numFollowers}')
+time.sleep(2)
+driver.find_element_by_xpath("//a[contains(@href,'/followers')]").click()
+
+
+
+
