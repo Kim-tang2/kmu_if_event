@@ -24,12 +24,13 @@ driver.find_element_by_name('password').send_keys(password)
 driver.find_element_by_xpath('//*[@id="loginForm"]/div[1]/div[3]/button').submit()  # 로그인
 time.sleep(3)
 
-print(time.asctime(time.localtime(time.time())) + ' 학생회 인스타그램 계정 ('+username+') 로그인 성공')
+print(time.asctime(time.localtime(time.time())) + ' 학생회 인스타그램 계정 (' + username + ') 로그인 성공')
 
 driver.find_element_by_xpath('//*[@id="react-root"]/section/main/div/div/div/div/button').click()  # 계정 정보 저장 X
 time.sleep(2)
 
-numFollowers = int(driver.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span").text)
+numFollowers = int(
+    driver.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span").text)
 print(f'({username}) 팔로워 수: {numFollowers}')
 
 driver.find_element_by_xpath("//a[contains(@href,'/followers')]").click()
@@ -59,3 +60,20 @@ followersDict = {instaID: name for instaID, name in zip(followersIdText, followe
 print(followersDict)
 
 
+def prize(productName, count):
+    print(f'\n{productName}({count}명)을(를) 추첨하겠습니다. >__<!')
+    print("두구 두구 두구 두구 두구 두구!!!!!!!")
+
+    for i in range(3, -1, -1):
+        time.sleep(1)
+        if (i == 0): continue
+        print(i)
+
+    prizeStudents = random.sample(followersIdText, count)
+    [print(followersDict[prizeStudent], prizeStudent) for prizeStudent in prizeStudents]
+
+
+prize('손목 받침대', 3)
+prize('전기방석', 3)
+prize('노트북 받침대', 3)
+prize('기프티콘', 40)
