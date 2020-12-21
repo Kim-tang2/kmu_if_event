@@ -1,4 +1,5 @@
 import time
+import random
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
@@ -45,6 +46,16 @@ while beforeLength != afterLength:
         "document.querySelectorAll('.isgrP')[0].scrollTo(0,document.querySelectorAll('.jSC57')[0].scrollHeight)")
     time.sleep(0.5)
 
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+followers = soup.find_all('a', ['FPmhX', 'notranslate', '_0imsa'])
+followersName = soup.find_all('div', ['wFPL8'])
 
+followersIdText = []
+followersNameText = []
+[followersIdText.append(follower.get_text()) for follower in followers]
+[followersNameText.append(followerName.get_text()) for followerName in followersName]
+followersDict = {instaID: name for instaID, name in zip(followersIdText, followersNameText)}
+
+print(followersDict)
 
 
