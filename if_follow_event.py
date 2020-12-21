@@ -15,7 +15,7 @@ driver = webdriver.Chrome('./chromedriver', options=options)
 driver.implicitly_wait(2)
 
 driver.get('https://www.instagram.com/' + username)
-driver.execute_script("document.querySelectorAll('.-nal3')[1].click();")  # 인젝션을 통해 팔로워 버튼 클릭
+driver.execute_script("document.querySelectorAll('.-nal3')[1].click();")  # 팔로워 버튼 클릭
 
 driver.find_element_by_name('username').send_keys(username)
 driver.find_element_by_name('password').send_keys(password)
@@ -30,8 +30,20 @@ time.sleep(2)
 
 numFollowers = int(driver.find_element_by_xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span").text)
 print(f'({username}) 팔로워 수: {numFollowers}')
-time.sleep(2)
+
 driver.find_element_by_xpath("//a[contains(@href,'/followers')]").click()
+
+time.sleep(2)
+
+beforeLength = -1
+afterLength = -2
+
+while beforeLength != afterLength:
+    beforeLength = afterLength
+    afterLength = driver.execute_script("return document.querySelectorAll('.jSC57')[0].scrollHeight")
+    driver.execute_script(
+        "document.querySelectorAll('.isgrP')[0].scrollTo(0,document.querySelectorAll('.jSC57')[0].scrollHeight)")
+    time.sleep(0.5)
 
 
 
