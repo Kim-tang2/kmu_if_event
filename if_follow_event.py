@@ -57,8 +57,6 @@ followersNameText = []
 [followersNameText.append(followerName.get_text()) for followerName in followersName]
 followersDict = {instaID: name for instaID, name in zip(followersIdText, followersNameText)}
 
-print(followersDict)
-
 
 def prize(productName, count):
     print(f'\n{productName}({count}명)을(를) 추첨하겠습니다. >__<!')
@@ -68,9 +66,13 @@ def prize(productName, count):
         time.sleep(1)
         if (i == 0): continue
         print(i)
+    values = []
 
-    prizeStudents = random.sample(followersIdText, count)
-    [print(followersDict[prizeStudent], prizeStudent) for prizeStudent in prizeStudents]
+    keys = random.sample(list(followersDict), count)
+    for key in keys:
+        values.append(followersDict.pop(key))
+
+    print(dict(zip(keys, values)))
 
 
 prize('손목 받침대', 3)
